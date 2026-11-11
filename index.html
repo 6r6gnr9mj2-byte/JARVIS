@@ -1,1 +1,39 @@
-
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020916">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="JARVIS">
+<title>JARVIS</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 50% 42%,#0b2545 0%,#041126 35%,#020916 75%);color:#d9f9ff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden}main{display:flex;min-height:100dvh;flex-direction:column;align-items:center;justify-content:space-evenly;padding:calc(24px + env(safe-area-inset-top)) 20px calc(30px + env(safe-area-inset-bottom));text-align:center}h1{margin:0;font-size:clamp(32px,9vw,48px);font-weight:300;letter-spacing:.26em;text-indent:.26em;text-shadow:0 0 20px #00cfff;color:#a6edff}.kicker{font-size:10px;letter-spacing:.36em;color:#6ba7c0;margin-top:12px}.core{position:relative;width:min(74vw,310px);aspect-ratio:1;display:grid;place-items:center;filter:drop-shadow(0 0 35px #0871a7)}.ring{position:absolute;border-radius:50%;border:2px solid #47dfff;box-shadow:0 0 15px #06aaff,inset 0 0 15px #06aaff;inset:6%;animation:spin 15s linear infinite}.ring.two{inset:16%;border:3px dashed #89edff;animation-duration:10s;animation-direction:reverse}.ring.three{inset:26%;border:1px solid #90f4ff;opacity:.8;animation-duration:7s}.orb{width:36%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 38% 35%,#e9ffff 0%,#72ecff 16%,#008fd6 43%,#002b65 69%,#01132b 100%);box-shadow:0 0 26px #00c8ff,0 0 75px #0075cf;animation:pulse 2.5s ease-in-out infinite}body.speaking .orb{animation:pulse .5s ease-in-out infinite}body.speaking .ring{box-shadow:0 0 30px #71f0ff,inset 0 0 30px #71f0ff}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{transform:scale(1.13);filter:brightness(1.3)}}.status{font-size:12px;color:#73e2ff;letter-spacing:.22em;min-height:2.5em;display:grid;place-items:center}button{border:1px solid #43ceff;border-radius:100px;color:#e8fdff;background:linear-gradient(180deg,#0b4b73,#03223c);font-size:14px;font-weight:600;letter-spacing:.12em;padding:18px 26px;min-height:56px;box-shadow:0 0 22px #007ab366;cursor:pointer}button:active{transform:scale(.98)}.note{max-width:300px;font-size:11px;line-height:1.5;color:#7aa8bf}small{font-size:10px;color:#527c96;letter-spacing:.16em}@media(max-height:650px){main{gap:10px}.core{width:min(44vh,240px)}.kicker{margin-top:5px}.note{display:none}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>JARVIS</h1><div class="kicker">PERSONAL ASSISTANT INTERFACE</div></header>
+<div class="core" aria-label="Animeret blåt JARVIS-hologram"><div class="ring"></div><div class="ring two"></div><div class="ring three"></div><div class="orb"></div></div>
+<section><div id="status" class="status" aria-live="polite">SYSTEM ONLINE</div><button id="activate" type="button">AKTIVÉR JARVIS</button></section>
+<div class="note">Første version: hologram og en fast stemmehilsen. En rigtig AI-samtale kræver en sikker serverforbindelse.</div>
+<small>JARVIS · VERSION 1.0</small>
+</main>
+<script>
+const status=document.getElementById('status');
+document.getElementById('activate').addEventListener('click',()=>{
+ if(!('speechSynthesis' in window)){status.textContent='STEMME IKKE UNDERSTØTTET';return;}
+ speechSynthesis.cancel();
+ const msg=new SpeechSynthesisUtterance('God aften, Boss. JARVIS er online og klar.');
+ msg.lang='da-DK';msg.rate=.93;msg.pitch=.82;
+ const voices=speechSynthesis.getVoices();
+ const danish=voices.find(v=>v.lang.toLowerCase().startsWith('da'));
+ if(danish)msg.voice=danish;
+ msg.onstart=()=>{document.body.classList.add('speaking');status.textContent='JARVIS TALER';};
+ msg.onend=()=>{document.body.classList.remove('speaking');status.textContent='SYSTEM ONLINE';};
+ msg.onerror=()=>{document.body.classList.remove('speaking');status.textContent='STEMME KUNNE IKKE AFSPILLES';};
+ speechSynthesis.speak(msg);
+});
+</script>
+</body>
+</html>
